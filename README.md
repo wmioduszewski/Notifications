@@ -1,2 +1,2 @@
 # Notifications
-Android notifications - proof of concept
+Android notification PoC
