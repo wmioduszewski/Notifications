@@ -1,24 +1,22 @@
 package com.mobica.womi.pushnots;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static final String ARGUMENT_ID = "passedArgument";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +54,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         scheduleAlarm();
     }
 
-    private void scheduleAlarm(){
+    private NotificationModel getNotificationInfo() {
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setTitle("Taki sobie tytuł");
+        notificationModel.setIsLongContent(false);
+        notificationModel.setLargeImageId(R.drawable.monkey);
+        notificationModel.setSmallImageId(R.drawable.panda);
+        return notificationModel;
+    }
+
+    private void scheduleAlarm() {
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+
+        alarmIntent.putExtra(ARGUMENT_ID, getNotificationInfo());
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Long time = new GregorianCalendar().getTimeInMillis() + 1000 * 2;
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-        Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "Notification send to appearance", Toast.LENGTH_LONG).show();
     }
 
 }
