@@ -4,35 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.mobica.womi.pushnots.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.mobica.womi.pushnots.MainActivity">
 
     <!--<include layout="@layout/content_main" />-->
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
+        <EditText
+            android:id="@+id/etTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Content"/>
-        <RadioButton
+            android:text="Sample notification title" />
+        <CheckBox
+            android:id="@+id/cbIsLongText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="short"/>
-        <RadioButton
+            android:layout_height="wrap_content"
+            android:text="Long content"/>
+
+        <RadioGroup
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="long"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="panda" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="monkey" />
+        </RadioGroup>
 
     </LinearLayout>
 
-    <Button android:id="@+id/btn_submit"
+    <Button
+        android:id="@+id/btn_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="submit"/>
+        android:text="submit" />
 
 
 </LinearLayout>

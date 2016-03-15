@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.GregorianCalendar;
@@ -56,10 +58,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private NotificationModel getNotificationInfo() {
         NotificationModel notificationModel = new NotificationModel();
-        notificationModel.setTitle("Taki sobie tytuł");
-        notificationModel.setIsLongContent(false);
+
+        EditText editText = (EditText) findViewById(R.id.etTitle);
+        notificationModel.setTitle(editText.getText().toString());
+
+        CheckBox cbIsLong = (CheckBox) findViewById(R.id.cbIsLongText);
+        notificationModel.setIsLongContent(cbIsLong.isChecked());
+
         notificationModel.setLargeImageId(R.drawable.monkey);
+
         notificationModel.setSmallImageId(R.drawable.panda);
+
         return notificationModel;
     }
 
