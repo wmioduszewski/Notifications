@@ -26,17 +26,67 @@
             android:layout_height="wrap_content"
             android:text="Long content"/>
 
+        <CheckBox
+            android:id="@+id/cbAutoCancelling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Autocancelling"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Large image"/>
+
         <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal" >
 
             <RadioButton
+                android:id="@+id/rbLargeImageNone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="none" />
+
+            <RadioButton
+                android:id="@+id/rbLargeImagePanda"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="panda" />
 
             <RadioButton
+                android:id="@+id/rbLargeImageMonkey"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="monkey" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Small image"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/rbSmallImageNone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="none" />
+
+            <RadioButton
+                android:id="@+id/rbSmallImagePanda"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="panda" />
+
+            <RadioButton
+                android:id="@+id/rbSmallImageMonkey"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="monkey" />

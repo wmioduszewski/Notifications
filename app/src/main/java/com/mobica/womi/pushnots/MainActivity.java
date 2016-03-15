@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.util.GregorianCalendar;
@@ -65,9 +66,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CheckBox cbIsLong = (CheckBox) findViewById(R.id.cbIsLongText);
         notificationModel.setIsLongContent(cbIsLong.isChecked());
 
-        notificationModel.setLargeImageId(R.drawable.monkey);
+        CheckBox cbAutoCancelling = (CheckBox) findViewById(R.id.cbAutoCancelling);
+        notificationModel.setIsAutoCancel(cbAutoCancelling.isChecked());
 
-        notificationModel.setSmallImageId(R.drawable.panda);
+        if(((RadioButton) findViewById(R.id.rbLargeImagePanda)).isChecked()){
+            notificationModel.setLargeImageId(R.drawable.panda);
+        }
+        if(((RadioButton) findViewById(R.id.rbLargeImageMonkey)).isChecked()){
+            notificationModel.setLargeImageId(R.drawable.monkey);
+        }
+
+        if(((RadioButton) findViewById(R.id.rbSmallImagePanda)).isChecked()){
+            notificationModel.setSmallImageId(R.drawable.panda);
+        }
+        if(((RadioButton) findViewById(R.id.rbSmallImageMonkey)).isChecked()){
+            notificationModel.setSmallImageId(R.drawable.monkey);
+        }
 
         return notificationModel;
     }
