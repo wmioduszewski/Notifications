@@ -95,7 +95,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Long time = new GregorianCalendar().getTimeInMillis() + 1000 * 2;
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
+
         Toast.makeText(this, "Notification send to appearance", Toast.LENGTH_LONG).show();
     }
 
