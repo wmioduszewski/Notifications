@@ -16,26 +16,66 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.datetimepicker.date.DatePickerDialog;
+import com.android.datetimepicker.time.RadialPickerLayout;
+import com.android.datetimepicker.time.TimePickerDialog;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     public static final String ARGUMENT_ID = "passedArgument";
+    private static final String TIME_PATTERN = "HH:mm";
+
     private AlarmManager alarmManager;
     private PendingIntent pendingAlarmIntent;
+    private Calendar calendar;
+    private TextView tvDate;
+    private TextView tvTime;
+    private RadioButton rbLater;
+    private RadioButton rbNow;
+    private Button btnCancel;
+    private Button btnSubmit;
+    private DateFormat dateFormat;
+    private SimpleDateFormat timeFormat;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnSubmit = (Button) findViewById(R.id.btn_submit);
-        Button btnCancel = (Button) findViewById(R.id.btn_cancel);
-        btnSubmit.setOnClickListener(this);
-        btnCancel.setOnClickListener(this);
+        init();
+    }
+
+    private void init() {
+        calendar = Calendar.getInstance();
+
+        dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
+
+        tvDate = (TextView) findViewById(R.id.tvDate);
+        tvTime = (TextView) findViewById(R.id.tvTime);
+        btnCancel = (Button) findViewById(R.id.btn_cancel);
+        btnSubmit = (Button) findViewById(R.id.btn_submit);
+        rbLater = (RadioButton) findViewById(R.id.rbLater);
+        rbNow = (RadioButton) findViewById(R.id.rbNow);
 
         fillBuildInfo();
+        setEvents();
+        update();
+    }
+
+    private void setEvents() {
+        btnSubmit.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
+        tvDate.setOnClickListener(this);
+        tvTime.setOnClickListener(this);
     }
 
     @Override
@@ -62,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Button sender = (Button) v;
+        TextView sender = (TextView) v;
         switch (sender.getId()) {
             case R.id.btn_submit:
                 scheduleAlarm();
@@ -70,12 +110,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_cancel:
                 cancelAlarm();
                 break;
+            case R.id.tvDate:
+                DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), "datePicker");
+                break;
+            case R.id.tvTime:
+                TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show(getFragmentManager(), "timePicker");
+                break;
         }
     }
 
     private void cancelAlarm() {
         alarmManager.cancel(pendingAlarmIntent);
-
     }
 
     private void fillBuildInfo() {
@@ -134,4 +179,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(this, "Notification send to appearance", Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+        calendar.set(year, monthOfYear, dayOfMonth);
+        update();
+    }
+
+    private void update() {
+        tvDate.setText(dateFormat.format(calendar.getTime()));
+        tvTime.setText(timeFormat.format(calendar.getTime()));
+        rbLater.setChecked(true);
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        update();
+    }
 }
