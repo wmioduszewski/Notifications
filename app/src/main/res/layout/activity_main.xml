@@ -44,16 +44,10 @@
             android:orientation="horizontal" >
 
             <RadioButton
-                android:id="@+id/rbLargeImageNone"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:checked="true"
-                android:text="none" />
-
-            <RadioButton
                 android:id="@+id/rbLargeImagePanda"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:checked="true"
                 android:text="panda" />
 
             <RadioButton
@@ -61,6 +55,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="monkey" />
+
+            <RadioButton
+                android:id="@+id/rbLargeImageNone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="none" />
+
         </RadioGroup>
 
         <TextView
@@ -72,6 +73,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/rbSmallImageStar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="star" />
 
             <RadioButton
                 android:id="@+id/rbSmallImagePanda"
@@ -93,6 +101,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="submit" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="cancel" />
+
+    <TextView
+        android:id="@+id/tvBuildDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>
