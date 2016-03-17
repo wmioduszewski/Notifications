@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.mobica.womi.pushnots.model.NotificationModel;
+
 /**
  * Created by womi on 2016-03-15.
  */

@@ -1,8 +1,6 @@
 package com.mobica.womi.pushnots;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,17 +12,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
+import com.mobica.womi.pushnots.model.DelayModel;
+import com.mobica.womi.pushnots.model.NotificationModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String ARGUMENT_ID = "passedArgument";
     private static final String TIME_PATTERN = "HH:mm";
 
-    private AlarmManager alarmManager;
+    private AlarmScheduler scheduler;
     private PendingIntent pendingAlarmIntent;
     private Calendar calendar;
     private TextView tvDate;
@@ -55,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
         calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 5);
+        scheduler = new AlarmScheduler(this);
 
         dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void cancelAlarm() {
-        alarmManager.cancel(pendingAlarmIntent);
+        if (pendingAlarmIntent != null)
+            scheduler.cancelAlarm(pendingAlarmIntent);
     }
 
     private void fillBuildInfo() {
@@ -162,21 +163,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return notificationModel;
     }
 
+    private DelayModel getDelayInfo() {
+        DelayModel delayModel = new DelayModel();
+
+        Calendar requestedStart;
+        if (rbNow.isChecked())
+            requestedStart = Calendar.getInstance();
+        else
+            requestedStart = calendar;
+        delayModel.setStartTime(requestedStart);
+
+        CheckBox cbIsRepeatable = (CheckBox) findViewById(R.id.cbRepeat);
+        delayModel.setIsRepeatable(cbIsRepeatable.isChecked());
+
+        EditText etMinutes = (EditText) findViewById(R.id.etMinutes);
+        int minutes = Integer.parseInt(etMinutes.getText().toString());
+        delayModel.setRepetitionIntervalInMinutes(minutes);
+
+        return delayModel;
+    }
+
     private void scheduleAlarm() {
+        NotificationModel notificationDetails = getNotificationInfo();
+
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        alarmIntent.putExtra(ARGUMENT_ID, getNotificationInfo());
-
+        alarmIntent.putExtra(MainActivity.ARGUMENT_ID, notificationDetails);
         pendingAlarmIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Long time = new GregorianCalendar().getTimeInMillis() + 1000 * 2;
 
-        long intervalInMinutes = 1;
-        long interval = intervalInMinutes * 1000 * 60;
-        //alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingAlarmIntent);
-
-        Toast.makeText(this, "Notification send to appearance", Toast.LENGTH_LONG).show();
+        scheduler.scheduleAlarm(pendingAlarmIntent, getDelayInfo());
     }
 
     @Override

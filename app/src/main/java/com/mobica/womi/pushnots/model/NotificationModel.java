@@ -1,4 +1,4 @@
-package com.mobica.womi.pushnots;
+package com.mobica.womi.pushnots.model;
 
 import java.io.Serializable;
 

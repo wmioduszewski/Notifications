@@ -13,8 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#aaffaa">
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/etTitle"
@@ -100,7 +99,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background= "#aaaaff"
         android:orientation="vertical">
 
         <LinearLayout
@@ -165,7 +163,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
-                android:id="@+id/editText"
+                android:id="@+id/etMinutes"
                 android:text="1"/>
 
             <TextView
