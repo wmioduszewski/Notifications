@@ -25,7 +25,11 @@ public class SerializationData implements Serializable {
         Iterator<CompleteNotificationInfo> it = notifications.iterator();
         while (it.hasNext()) {
             CompleteNotificationInfo cni = it.next();
-            if (cni.getDelayModel() == null || cni.getDelayModel().getStartTime() == null || cni.getDelayModel().getStartTime().getTimeInMillis() < now) {
+            DelayModel delayModel = cni.getDelayModel();
+            if (delayModel == null || delayModel.getStartTime() == null) {
+                it.remove();
+            }
+            else if (!delayModel.isRepeatable() && delayModel.getStartTime().getTimeInMillis() < now){
                 it.remove();
             }
         }
