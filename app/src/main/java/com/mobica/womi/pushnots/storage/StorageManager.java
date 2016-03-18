@@ -18,7 +18,7 @@ public class StorageManager {
 
     private static final String FileName = "NotificationsBackup";
 
-    public static void saveData(Context context, SerializationData serializationData) throws IOException {
+    private static void saveData(Context context, SerializationData serializationData) throws IOException {
         FileOutputStream fos = context.openFileOutput(FileName, Context.MODE_PRIVATE);
         ObjectOutputStream os = new ObjectOutputStream(fos);
         os.writeObject(serializationData.removeOldEntries());

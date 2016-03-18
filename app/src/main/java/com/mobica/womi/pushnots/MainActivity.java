@@ -2,7 +2,6 @@ package com.mobica.womi.pushnots;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +20,6 @@ import com.android.datetimepicker.time.TimePickerDialog;
 import com.mobica.womi.pushnots.model.CompleteNotificationInfo;
 import com.mobica.womi.pushnots.model.DelayModel;
 import com.mobica.womi.pushnots.model.NotificationModel;
-import com.mobica.womi.pushnots.storage.StorageManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TIME_PATTERN = "HH:mm";
 
     private AlarmScheduler scheduler;
-    private PendingIntent pendingAlarmIntent;
+    private PendingIntent currentPendingAlarmIntent;
     private Calendar calendar;
     private TextView tvDate;
     private TextView tvTime;
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         fillBuildInfo();
         setEvents();
-        update();
+        updateTimeLabels();
         setAlarmAfterReboot();
     }
 
@@ -95,19 +93,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -135,12 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void cancelAlarm() {
-        if (pendingAlarmIntent != null) {
-            scheduler.cancelAlarm(pendingAlarmIntent);
-            StorageManager.cancelAll(this);
-        }
-
-
+        scheduler.cancelAlarm(currentPendingAlarmIntent);
     }
 
     private void fillBuildInfo() {
@@ -205,26 +193,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void scheduleAlarm() {
         NotificationModel notificationDetails = getNotificationInfo();
         DelayModel delayDetails = getDelayInfo();
-        CompleteNotificationInfo cni = new CompleteNotificationInfo();
-        cni.setNotificationModel(notificationDetails);
-        cni.setDelayModel(delayDetails);
-        StorageManager.add(this, cni);
-
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        alarmIntent.putExtra(MainActivity.ARGUMENT_ID, notificationDetails);
-        alarmIntent.setAction(MainActivity.ACTION_ID);
-        pendingAlarmIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        scheduler.scheduleAlarm(pendingAlarmIntent, delayDetails);
+        CompleteNotificationInfo cni = new CompleteNotificationInfo(delayDetails, notificationDetails);
+        currentPendingAlarmIntent = scheduler.getPendingIntentForAlarm(notificationDetails);
+        scheduler.scheduleAlarm(cni, currentPendingAlarmIntent);
     }
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
         calendar.set(year, monthOfYear, dayOfMonth);
-        update();
+        updateTimeLabels();
     }
 
-    private void update() {
+    private void updateTimeLabels() {
         tvDate.setText(dateFormat.format(calendar.getTime()));
         tvTime.setText(timeFormat.format(calendar.getTime()));
         rbLater.setChecked(true);
@@ -234,6 +214,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
-        update();
+        updateTimeLabels();
     }
 }

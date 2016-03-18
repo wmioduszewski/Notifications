@@ -10,19 +10,17 @@ public class CompleteNotificationInfo implements Serializable {
     private DelayModel delayModel;
     private NotificationModel notificationModel;
 
-    public DelayModel getDelayModel() {
-        return delayModel;
+    public CompleteNotificationInfo(DelayModel delayModel, NotificationModel notificationModel) {
+        this.delayModel = delayModel;
+        this.notificationModel = notificationModel;
     }
 
-    public void setDelayModel(DelayModel delayModel) {
-        this.delayModel = delayModel;
+    public DelayModel getDelayModel() {
+        return delayModel;
     }
 
     public NotificationModel getNotificationModel() {
         return notificationModel;
     }
 
-    public void setNotificationModel(NotificationModel notificationModel) {
-        this.notificationModel = notificationModel;
-    }
 }

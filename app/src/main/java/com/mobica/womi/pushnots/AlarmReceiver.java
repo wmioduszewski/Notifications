@@ -46,11 +46,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (serializationData.getNotifications() != null && serializationData.getNotifications().size() > 0)
             for (CompleteNotificationInfo cni : serializationData.getNotifications()) {
-                Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-                alarmIntent.setAction(MainActivity.ACTION_ID);
-                alarmIntent.putExtra(MainActivity.ARGUMENT_ID, cni.getNotificationModel());
-                PendingIntent pendingAlarmIntent = PendingIntent.getBroadcast(context, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                scheduler.scheduleAlarm(pendingAlarmIntent, cni.getDelayModel());
+                PendingIntent pendingAlarmIntent = scheduler.getPendingIntentForAlarm(cni.getNotificationModel());
+                scheduler.scheduleAlarm(cni, pendingAlarmIntent);
             }
     }
 }
