@@ -1,7 +1,9 @@
 package com.mobica.womi.pushnots;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -16,8 +18,10 @@ import android.widget.TextView;
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
+import com.mobica.womi.pushnots.model.CompleteNotificationInfo;
 import com.mobica.womi.pushnots.model.DelayModel;
 import com.mobica.womi.pushnots.model.NotificationModel;
+import com.mobica.womi.pushnots.storage.StorageManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,6 +32,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     public static final String ARGUMENT_ID = "passedArgument";
+    public static final String ACTION_ID = "com.mobica.womi.pushnots.NOTIFICATION";
     private static final String TIME_PATTERN = "HH:mm";
 
     private AlarmScheduler scheduler;
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fillBuildInfo();
         setEvents();
         update();
+        setAlarmAfterReboot();
     }
 
     private void setEvents() {
@@ -76,6 +82,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCancel.setOnClickListener(this);
         tvDate.setOnClickListener(this);
         tvTime.setOnClickListener(this);
+    }
+
+    private void setAlarmAfterReboot() {
+        ComponentName receiver = new ComponentName(this, AlarmReceiver.class);
+        PackageManager pm = getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     @Override
@@ -120,8 +135,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void cancelAlarm() {
-        if (pendingAlarmIntent != null)
+        if (pendingAlarmIntent != null) {
             scheduler.cancelAlarm(pendingAlarmIntent);
+            StorageManager.cancelAll(this);
+        }
+
+
     }
 
     private void fillBuildInfo() {
@@ -185,12 +204,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void scheduleAlarm() {
         NotificationModel notificationDetails = getNotificationInfo();
+        DelayModel delayDetails = getDelayInfo();
+        CompleteNotificationInfo cni = new CompleteNotificationInfo();
+        cni.setNotificationModel(notificationDetails);
+        cni.setDelayModel(delayDetails);
+        StorageManager.add(this, cni);
 
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         alarmIntent.putExtra(MainActivity.ARGUMENT_ID, notificationDetails);
+        alarmIntent.setAction(MainActivity.ACTION_ID);
         pendingAlarmIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        scheduler.scheduleAlarm(pendingAlarmIntent, getDelayInfo());
+        scheduler.scheduleAlarm(pendingAlarmIntent, delayDetails);
     }
 
     @Override

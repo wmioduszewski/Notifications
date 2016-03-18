@@ -1,11 +1,12 @@
 package com.mobica.womi.pushnots.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  * Created by womi on 2016-03-17.
  */
-public class DelayModel {
+public class DelayModel implements Serializable {
     private Calendar startTime;
     private boolean isRepeatable;
     private int repetitionIntervalInMinutes;
@@ -27,7 +28,6 @@ public class DelayModel {
     }
 
     public Calendar getStartTime() {
-
         return startTime;
     }
 

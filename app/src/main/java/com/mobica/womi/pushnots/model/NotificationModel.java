@@ -1,5 +1,7 @@
 package com.mobica.womi.pushnots.model;
 
+import com.mobica.womi.pushnots.R;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +10,10 @@ import java.io.Serializable;
 public class NotificationModel implements Serializable {
     private boolean isLongContent = false;
     private String title;
-    private int smallImageId = -1;
+
+    //small image is set by default because notification won't be shown without it
+    //you can change it to another with setSmallImage method
+    private int smallImageId = R.drawable.star;
     private int largeImageId = -1;
     private boolean isAutoCancel = false;
 
@@ -50,5 +55,13 @@ public class NotificationModel implements Serializable {
 
     public void setIsAutoCancel(boolean isAutoCancel) {
         this.isAutoCancel = isAutoCancel;
+    }
+
+    public static NotificationModel getSampleNotificationModel(String title) {
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setIsAutoCancel(true);
+        notificationModel.setTitle(title);
+        notificationModel.setIsLongContent(false);
+        return notificationModel;
     }
 }
