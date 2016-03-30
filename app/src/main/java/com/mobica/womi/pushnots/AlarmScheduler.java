@@ -34,7 +34,7 @@ public class AlarmScheduler {
         long start = delayModel.getStartTime().getTimeInMillis();
 
         if (delayModel.isRepeatable()) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, start, interval, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, start, interval, pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         }
